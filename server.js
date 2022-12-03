@@ -39,7 +39,22 @@ app.get("/messages/:id", function (request, response) {
 app.post("/messages", function (request, response) {
   const { from, text } = request.body;
   const newMessage = { from, text };
+
   newMessage.id = availableId++;
   messages.push(newMessage);
   response.sendStatus(201);
+  if (selectedId.length === 0) {
+    return response.status(400).send({ mess: `This id doesn't exist` });
+  }
+  response.send(selectedId);
+});
+app.delete("/messages/:id", function (request, response) {
+  let messageId = request.params.id;
+  const selectedMessage = messages.find((message) => message.id == messageId);
+  if (selectedMessage) {
+    messages.splice(selectedMessage, 1);
+    response.status(200).send("Message deleted");
+  } else {
+    response.status(404).send("Message not found");
+  }
 });
