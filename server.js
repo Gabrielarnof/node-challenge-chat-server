@@ -27,17 +27,20 @@ app.listen(3000, () => {
   console.log("Listening on port 3000");
 });
 
+app.get("/messages", function (request, response) {
+  response.json(messages);
+});
 const searchFunction = (req, res) => {
   const searchTerm = req.query.text;
   const match = messages.filter((message) =>
     message.text.toLowerCase().includes(searchTerm.toLowerCase())
   );
   res.send(match);
-  console.log(searchFunction);
 };
+app.get("/messages/search", searchFunction);
 
-app.get("/messages", function (request, response) {
-  response.json(messages);
+app.get("/messages/latest", (request, response) => {
+  response.send(messages.slice(-10));
 });
 
 app.get("/messages/:id", function (request, response) {
@@ -62,4 +65,3 @@ app.delete("/messages/:id", function (request, response) {
     response.status(404).send("Message not found");
   }
 });
-app.get("/messages/search", searchFunction);
