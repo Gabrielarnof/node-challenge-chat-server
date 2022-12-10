@@ -27,6 +27,15 @@ app.listen(3000, () => {
   console.log("Listening on port 3000");
 });
 
+const searchFunction = (req, res) => {
+  const searchTerm = req.query.text;
+  const match = messages.filter((message) =>
+    message.text.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  res.send(match);
+  console.log(searchFunction);
+};
+
 app.get("/messages", function (request, response) {
   response.json(messages);
 });
@@ -39,22 +48,18 @@ app.get("/messages/:id", function (request, response) {
 app.post("/messages", function (request, response) {
   const { from, text } = request.body;
   const newMessage = { from, text };
-
   newMessage.id = availableId++;
   messages.push(newMessage);
   response.sendStatus(201);
-  if (selectedId.length === 0) {
-    return response.status(400).send({ mess: `This id doesn't exist` });
-  }
-  response.send(selectedId);
 });
 app.delete("/messages/:id", function (request, response) {
   let messageId = request.params.id;
   const selectedMessage = messages.find((message) => message.id == messageId);
   if (selectedMessage) {
-    messages.splice(selectedMessage, 1);
+    messages.splice(selectedMessage);
     response.status(200).send("Message deleted");
   } else {
     response.status(404).send("Message not found");
   }
 });
+app.get("/messages/search", searchFunction);
