@@ -54,6 +54,7 @@ app.post("/messages", function (request, response) {
   newMessage.id = availableId++;
   messages.push(newMessage);
   response.sendStatus(201);
+  
 });
 app.delete("/messages/:id", function (request, response) {
   let messageId = request.params.id;
